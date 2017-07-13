@@ -9,7 +9,7 @@
 
 native LMC_GetClientOverlayModel(iClient);// remove this and enable the include to compile with the include this is just here for AM compiler
 
-#define PLUGIN_VERSION "2.0"
+#define PLUGIN_VERSION "2.0.1"
 
 static Handle:hCvar_Enabled = INVALID_HANDLE;
 static Handle:hCvar_GlowEnabled = INVALID_HANDLE;
@@ -75,7 +75,7 @@ public Plugin:myinfo =
 	url = "https://forums.alliedmods.net/showthread.php?p=2449184#post2449184"
 }
 
-#define AUTO_EXEC false
+#define AUTO_EXEC true
 public OnPluginStart()
 {
 	CreateConVar("lmc_bwnotice_version", PLUGIN_VERSION, "Version of black and white notification plugin", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
