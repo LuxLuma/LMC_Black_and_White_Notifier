@@ -5,11 +5,10 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-//#include <L4D2ModelChanger>
 
-native LMC_GetClientOverlayModel(iClient);// remove this and enable the include to compile with the include this is just here for AM compiler
+native LMC_GetClientOverlayModel(iClient);
 
-#define PLUGIN_VERSION "2.0.1"
+#define PLUGIN_VERSION "2.0.2"
 
 static Handle:hCvar_Enabled = INVALID_HANDLE;
 static Handle:hCvar_GlowEnabled = INVALID_HANDLE;
@@ -41,28 +40,29 @@ static bool:bLMC_Available = false;
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
+	if(GetEngineVersion() != Engine_Left4Dead2 )
+	{
+		strcopy(error, err_max, "Plugin only supports Left 4 Dead 2");
+		return APLRes_SilentFailure;
+	}
 	MarkNativeAsOptional("LMC_GetClientOverlayModel");
-	MarkNativeAsOptional("LMC_SetClientOverlayModel");
-	MarkNativeAsOptional("LMC_SetEntityOverlayModel");
-	MarkNativeAsOptional("LMC_GetEntityOverlayModel");
-	MarkNativeAsOptional("LMC_HideClientOverlayModel");
 	return APLRes_Success;
 }
 
 public OnAllPluginsLoaded()
 {
-	bLMC_Available = LibraryExists("L4D2ModelChanger");
+	bLMC_Available = LibraryExists("LMCCore");
 }
 
 public OnLibraryAdded(const String:sName[])
 {
-	if(StrEqual(sName, "L4D2ModelChanger"))
+	if(StrEqual(sName, "LMCCore"))
 	bLMC_Available = true;
 }
 
 public OnLibraryRemoved(const String:sName[])
 {
-	if(StrEqual(sName, "L4D2ModelChanger"))
+	if(StrEqual(sName, "LMCCore"))
 	bLMC_Available = false;
 }
 
@@ -78,7 +78,7 @@ public Plugin:myinfo =
 #define AUTO_EXEC true
 public OnPluginStart()
 {
-	CreateConVar("lmc_bwnotice_version", PLUGIN_VERSION, "Version of black and white notification plugin", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
+	CreateConVar("lmc_bwnotice_version", PLUGIN_VERSION, "Version of black and white notification plugin", FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	hCvar_Enabled = CreateConVar("lmc_blackandwhite", "1", "Enable black and white notification plugin?(1/0 = yes/no)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	hCvar_GlowEnabled = CreateConVar("lmc_glow", "1", "Enable making black white players glow?(1/0 = yes/no)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	hCvar_GlowColour = CreateConVar("lmc_glowcolour", "255 255 255", "Glow(255 255 255)", FCVAR_NOTIFY);
